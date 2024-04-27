@@ -9,8 +9,8 @@ from voice_generator.voice_generator import VoiceGenerator
 from voice_reader.voice_reader import VoiceReader
 from openai import OpenAI
 from dotenv import load_dotenv
-load_dotenv()
 
+load_dotenv()
 
 slack_connector = SlackConnector()
 weather_connector = WeatherConnector()
