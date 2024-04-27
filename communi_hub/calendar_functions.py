@@ -17,23 +17,22 @@ functions = [{
                     },
                     "required": ["appointment_title", "appointment_date"],
                 },
-            },
+            }
+    },
+    {
+    "type": "function",
             "function": {
-                "name": "del_appoinment_from_calendar",
-                "description": "Add appointment to the calendar",
+                "name": "delete_appointment_from_calendar",
+                "description": "Delete appointment from the calendar",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "appointment_title": {
-                            "type": "string",
-                            "description": "Appointment title",
-                        },
                         "appointment_date": {
                             "type": "string",
-                            "description": "The start date for the appointment in YYYY-MM-DD format",
+                            "description": "The date of the appointment in YYYY-MM-DD format",
                         }
                     },
-                    "required": ["appointment_title", "appointment_date"],
+                    "required": ["appointment_date"],
                 },
-            },
+            }
 }]
