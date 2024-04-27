@@ -1,5 +1,6 @@
 import os
 import json
+from communi_hub import calendar_functions, mail_functions, slack_functions, weather_functions
 from communi_hub.slack_connector import SlackConnector
 from communi_hub.calendar_connector import CalendarConnector
 from communi_hub.mail_connector import MailConnector
@@ -27,93 +28,8 @@ available_functions = {
 
 def run_conversation(messages):
     # Step 1: send the conversation and available functions to the model
-    tools = [
-        {
-            "type": "function",
-            "function": {
-                "name": "get_current_weather",
-                "description": "Get the current weather in a given location",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "location": {
-                            "type": "string",
-                            "description": "The city and state, e.g. San Francisco, CA",
-                        },
-                        "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
-                    },
-                    "required": ["location"],
-                },
-            },
-        },
-        {
-            "type": "function",
-            "function": {
-                "name": "send_message_on_slack",
-                "description": "Send message on slack",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "message": {
-                            "type": "string",
-                            "description": "Message typed to send",
-                        },
-                        "receiver_name": {
-                            "type": "string",
-                            "description": "Message receiver name",
-                        },
-                        "receiver_surname": {
-                            "type": "string",
-                            "description": "Message receiver surname",
-                        },
-                    },
-                    "required": ["message", "receiver_name", "receiver_surname"],
-                },
-            },
-        },
-        {
-            "type": "function",
-            "function": {
-                "name": "send_email",
-                "description": "Send Email message",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "message": {
-                            "type": "string",
-                            "description": "Message typed to send",
-                        },
-                        "email": {
-                            "type": "string",
-                            "description": "Message receiver email address",
-                        }
-                    },
-                    "required": ["message", "email"],
-                },
-            },
-        },
-        {
-            "type": "function",
-            "function": {
-                "name": "add_appointment_to_calendar",
-                "description": "Add appointment to the calendar",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "appointment_title": {
-                            "type": "string",
-                            "description": "Appointment title",
-                        },
-                        "date": {
-                            "type": "string",
-                            "description": "The start date for the appointment in YYYY-MM-DD format",
-                        }
-                    },
-                    "required": ["appointment_title", "date"],
-                },
-            },
-        }
-    ]
+    tools = calendar_functions.functions + slack_functions.functions + \
+        mail_functions.functions + weather_functions.functions
 
     response = client.chat.completions.create(
         model=gpt_model,
