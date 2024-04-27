@@ -8,18 +8,10 @@ functions = [{
             "properties": {
                 "message": {
                     "type": "string",
-                    "description": "Message typed to send",
-                },
-                "receiver_name": {
-                    "type": "string",
-                    "description": "Message receiver name",
-                },
-                "receiver_surname": {
-                    "type": "string",
-                    "description": "Message receiver surname",
+                    "description": "Put a message content here",
                 },
             },
-            "required": ["message", "receiver_name", "receiver_surname"],
+            "required": ["message"],
         },
     },
 }]
