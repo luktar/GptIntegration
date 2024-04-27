@@ -1,3 +1,4 @@
+import os
 from communi_hub.calendar_connector import CalendarConnector
 from communi_hub.mail_connector import MailConnector
 from communi_hub.slack_connector import SlackConnector
@@ -7,11 +8,13 @@ import config
 from openai import OpenAI
 import json
 
-configuration = config.load_config("config.json")
-client = OpenAI(api_key=configuration.openai_apikey)
+gpt_model = "gpt-3.5-turbo-0125"
+client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 
 # Example dummy function hard coded to return the same weather
 # In production, this could be your backend API or an external API
+
+
 def get_current_weather(location, unit="fahrenheit"):
     """Get the current weather in a given location"""
     if "tokyo" in location.lower():
@@ -22,15 +25,19 @@ def get_current_weather(location, unit="fahrenheit"):
         return json.dumps({"location": "Paris", "temperature": "22", "unit": unit})
     else:
         return json.dumps({"location": location, "temperature": "unknown"})
-    
+
+
 def send_message_on_slack(message, receiver_name, receiver_surname):
-   return 'Slack message sent: ' + message + " receiver_name: " + receiver_name + " receiver_surname: " + receiver_surname
-    
+    return 'Slack message sent: ' + message + " receiver_name: " + receiver_name + " receiver_surname: " + receiver_surname
+
+
 def send_email(message, email):
     return 'Email message sent ' + message + ' email'
-    
-def add_appointment_to_callendar(appointment_title, date):
-    return 'Added appointment to callendat: ' + appointment_title + " for date " + date
+
+
+def add_appointment_to_calendar(appointment_title, date):
+    return 'Added appointment to calendar: ' + appointment_title + " for date " + date
+
 
 def run_conversation(messages):
     # Step 1: send the conversation and available functions to the model
@@ -95,15 +102,15 @@ def run_conversation(messages):
                             "description": "Message receiver email address",
                         }
                     },
-                    "required": ["message", "email"], 
+                    "required": ["message", "email"],
                 },
             },
         },
         {
             "type": "function",
             "function": {
-                "name": "add_appointment_to_callendar",
-                "description": "Add appointment to the callendar",
+                "name": "add_appointment_to_calendar",
+                "description": "Add appointment to the calendar",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -116,22 +123,24 @@ def run_conversation(messages):
                             "description": "The start date for the appointment in YYYY-MM-DD format",
                         }
                     },
-                    "required": ["appointment_title", "date"], 
+                    "required": ["appointment_title", "date"],
                 },
             },
         }
     ]
+
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",
+        model=gpt_model,
         messages=messages,
         tools=tools,
         tool_choice="auto",  # auto is default, but we'll be explicit
     )
+
     print(response.choices[0].message.content)
-    
+
     response_message = response.choices[0].message
     tool_calls = response_message.tool_calls
-    # Step 2: check if the model wsanted to call a function
+    # Step 2: check if the model wanted to call a function
     if tool_calls:
         # Step 3: call the function
         # Note: the JSON response may not always be valid; be sure to handle errors
@@ -139,9 +148,10 @@ def run_conversation(messages):
             "get_current_weather": get_current_weather,
             "send_message_on_slack": send_message_on_slack,
             "send_email": send_email,
-            "add_appointment_to_callendar": add_appointment_to_callendar
+            "add_appointment_to_calendar": add_appointment_to_calendar
         }
-        messages.append(response_message)  # extend conversation with assistant's reply
+        # extend conversation with assistant's reply
+        messages.append(response_message)
         # Step 4: send the info for each function call and function response to the model
         for tool_call in tool_calls:
             function_name = tool_call.function.name
@@ -158,21 +168,23 @@ def run_conversation(messages):
                 }
             )  # extend conversation with function response
         second_response = client.chat.completions.create(
-            model="gpt-3.5-turbo-0125",
+            model=gpt_model,
             messages=messages,
         )  # get a new response from the model where it can see the function response
         return second_response
-    
+
 
 def main():
     # Tutaj umieść główną logikę swojego programu
     # uncomment test propmpts to check if function calling works
     # messages = [{"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"}]
-    messages = [{"role": "user", "content": "Please send slack message Hi, when will you start your work today? to the user Pawel Tomków"}]
+    messages = [
+        {"role": "user", "content": "Please send slack message Hi, when will you start your work today? to the user Pawel Tomków"}]
     # messages = [{"role": "user", "content": "Please send email message Hi, when will you start your work today? to the email paweltomkow@gmail.com"}]
     # messages = [{"role": "user", "content": "Please add appointment with title Project Onboarding Meeting for a next friday. Today is 22.04.2024"}]
     chat_completion = run_conversation(messages)
     print(chat_completion.choices[0].message.content)
+
 
 if __name__ == "__main__":
     main()
