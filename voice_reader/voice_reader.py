@@ -1,18 +1,28 @@
+import io
 import speech_recognition as sr
+from openai import OpenAI
+
 
 class VoiceReader:
     def __init__(self) -> None:
-        pass
+        self.client = OpenAI()
+        self.r = sr.Recognizer()
 
     def record_voice(self):
-        r = sr.Recognizer()
-
         with sr.Microphone() as source:
+            print("Calibrating...")
+            self.r.adjust_for_ambient_noise(source)
             print("Listening...")
             # read the audio data from the default microphone
-            audio_data = r.listen(source, 4)
+            audio_data = self.r.listen(source, 4)
+            wav_data = audio_data.get_wav_data()
+            buffer = io.BytesIO(wav_data)
+            buffer.name = "recording.wav"
             print("Recognizing...")
-            # convert speech to text
-            text = r.recognize_whisper(audio_data, "small")
-            print(text)
-            return text
+            transcription = self.client.audio.transcriptions.create(
+                model="whisper-1",
+                file=buffer,
+                response_format="text"
+            )
+            print(transcription)
+            return transcription
