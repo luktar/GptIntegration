@@ -1,6 +1,11 @@
 {
   "cSpell.words": [
     "communi",
+    "dotenv",
     "OPENAI"
-  ]
+  ],
+  "[python]": {
+    "editor.tabSize": 4,
+    "files.autoSave": "afterDelay"
+  }
 }

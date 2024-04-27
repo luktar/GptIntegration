@@ -39,3 +39,4 @@ torch==2.3.0
 tqdm==4.66.2
 typing_extensions==4.11.0
 urllib3==2.2.1
+slack_sdk==3.27.1
