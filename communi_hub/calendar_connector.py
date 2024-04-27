@@ -7,24 +7,33 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import json
+from dotenv import load_dotenv
+from pathlib import Path
+
+dotenv_path = Path('../.env')
+load_dotenv()
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
+CRED = json.loads(os.environ['CALENDAR_CRED'])
 
 
 class CalendarConnector:
 
-    def __init__(self, calendar_cred):
+    def __init__(self):
         self.service = None
-        self.connect_to_api(calendar_cred)
+        self.connect_to_api()
 
-    def connect_to_api(self, calendar_cred):
-        flow = InstalledAppFlow.from_client_config(calendar_cred, SCOPES)
+    def connect_to_api(self):
+
+        flow = InstalledAppFlow.from_client_config(CRED, SCOPES)
         creds = flow.run_local_server(port=0)
 
         self.service = build("calendar", "v3", credentials=creds)
         print("Successfully connected to Google Calendar")
 
     def add_appointment_to_calendar(self, appointment_title: str, appointment_date: str):
+        if not self.service:
+            self.connect_to_api()
         try:
             if dt.datetime.strptime(appointment_date, "%Y-%m-%d").date() < dt.datetime.now().date():
                 return "You can only create events for today or future dates"
