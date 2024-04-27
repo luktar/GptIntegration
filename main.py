@@ -8,11 +8,15 @@ from communi_hub.weather_connector import WeatherConnector
 from voice_generator.voice_generator import VoiceGenerator
 from voice_reader.voice_reader import VoiceReader
 from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 slack_connector = SlackConnector()
 weather_connector = WeatherConnector()
 email_connector = MailConnector()
-calendar_connector = CalendarConnector()
+calendar_connector = CalendarConnector(json.loads(os.environ['CALENDAR_CRED']))
+voice_reader = VoiceReader()
 
 gpt_model = "gpt-3.5-turbo-0125"
 client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
@@ -60,22 +64,22 @@ def run_conversation(messages):
                     "name": function_name,
                     "content": function_response,
                 }
-            )  # extend conversation with function response
+            )
         second_response = client.chat.completions.create(
             model=gpt_model,
             messages=messages,
-        )  # get a new response from the model where it can see the function response
+        ) 
         return second_response
 
 
 def main():
+    voice_reader.record_voice()
     # Tutaj umieść główną logikę swojego programu
-    # uncomment test propmpts to check if function calling works
-    # messages = [{"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"}]
     messages = [
-        # {"role": "user", "content": "Add a new event into the calendar and name it a feedback meeting with Rebeca. Set the date on 24th of July 2024."}]
-        {"role": "user", "content": "Please send email message Hi, when will you start your work today? to the email paweltomkow@gmail.com"}]
-    # messages = [{"role": "user", "content": "Please add appointment with title Project Onboarding Meeting for a next friday. Today is 22.04.2024"}]
+        {"role": "user", "content": "Wyślij wiadomość na slakcu o treści witajcie jestem drugą wiadomością"}]
+        # {"role": "user", "content": "Please send email message Hi, when will you start your work today? to the email paweltomkow@gmail.com"}]
+        # {"role": "user", "content": "Please add appointment with title Project Onboarding Meeting for a next friday. Today is 22.04.2024"}]
+        # {"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"}]
     chat_completion = run_conversation(messages)
     print(chat_completion.choices[0].message.content)
 
