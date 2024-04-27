@@ -25,8 +25,9 @@ client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 available_functions = {
     "get_current_weather": weather_connector.get_current_weather,
     "send_message_on_slack": slack_connector.send_message,
+    "read_messages_from_slack": slack_connector.read_messages,
     "send_email": email_connector.send_email,
-    "add_appointment_to_calendar": calendar_connector.add_appointment_to_calendar
+    "add_appointment_to_calendar": calendar_connector.add_appointment_to_calendar,
 }
 
 
@@ -76,7 +77,7 @@ def main():
     voice_reader.record_voice()
     # Tutaj umieść główną logikę swojego programu
     messages = [
-        {"role": "user", "content": "Wyślij wiadomość na slakcu o treści witajcie jestem drugą wiadomością"}]
+        {"role": "user", "content": "Przeczytaj dwie ostatnie wiadomości na slacku."}]
         # {"role": "user", "content": "Please send email message Hi, when will you start your work today? to the email paweltomkow@gmail.com"}]
         # {"role": "user", "content": "Please add appointment with title Project Onboarding Meeting for a next friday. Today is 22.04.2024"}]
         # {"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"}]
