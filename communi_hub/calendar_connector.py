@@ -42,11 +42,11 @@ class CalendarConnector:
                 "summary": appointment_title,
                 "colorId": 2,
                 "start": {
-                    "dateTime": f"{appointment_date}T08:00:00+02:00",
+                    "dateTime": f"{appointment_date}T08:00:00Z",
                     "timeZone": "Europe/Warsaw",
                 },
                 "end": {
-                    "dateTime": f"{appointment_date}T10:00:00+02:00",
+                    "dateTime": f"{appointment_date}T10:00:00Z",
                     "timeZone": "Europe/Warsaw",
                 }
             }
@@ -59,8 +59,8 @@ class CalendarConnector:
 
     def delete_appointment_from_calendar(self, appointment_date: str):
         try:
-            start = f"{appointment_date}T01:00:00+02:00"
-            end = f"{appointment_date}T20:00:00+02:00"
+            start = f"{appointment_date}T08:00:00Z"
+            end = f"{appointment_date}T10:00:00Z"
 
             events_result = self.service.events().list(
                 calendarId='primary',
