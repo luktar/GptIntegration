@@ -18,7 +18,7 @@ functions = [{
                     "required": ["appointment_title", "appointment_date"],
                 },
             }
-    },
+},
     {
     "type": "function",
             "function": {

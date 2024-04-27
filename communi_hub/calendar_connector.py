@@ -21,14 +21,33 @@ class CalendarConnector:
 
     def __init__(self):
         self.service = None
+        self.creds = None
         self.connect_to_api()
+
+    # Wersja bez tokenu w json
+    # def connect_to_api(self):
+    #     flow = InstalledAppFlow.from_client_config(CRED, SCOPES)
+    #     self.creds = flow.run_local_server(port=0)
+    #     self.service = build("calendar", "v3", credentials=self.creds)
+    #     print("Successfully connected to Google Calendar")
 
     def connect_to_api(self):
 
-        flow = InstalledAppFlow.from_client_config(CRED, SCOPES)
-        creds = flow.run_local_server(port=0)
+        if os.path.exists("calendar_token.json"):
+            self.creds = Credentials.from_authorized_user_file(
+                "calendar_token.json")
 
-        self.service = build("calendar", "v3", credentials=creds)
+        if not self.creds or not self.creds.valid:
+            if self.creds and self.creds.expired and self.creds.refresh_token:
+                self.creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_config(CRED, SCOPES)
+                self.creds = flow.run_local_server(port=0)
+
+        with open("calendar_token.json", "w") as token:
+            token.write(self.creds.to_json())
+
+        self.service = build("calendar", "v3", credentials=self.creds)
         print("Successfully connected to Google Calendar")
 
     def add_appointment_to_calendar(self, appointment_title: str, appointment_date: str):
@@ -58,15 +77,16 @@ class CalendarConnector:
             return "Error occurred while adding appointment to calendar."
 
     def delete_appointment_from_calendar(self, appointment_date: str):
+        if not self.service:
+            self.connect_to_api()
         try:
             start = f"{appointment_date}T08:00:00Z"
             end = f"{appointment_date}T10:00:00Z"
 
             events_result = self.service.events().list(
                 calendarId='primary',
-                timeMin=start,
                 timeMax=end,
-                maxResults=2,
+                timeMin=start,
             ).execute()
 
             if not events_result.get('items', []):
