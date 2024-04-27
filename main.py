@@ -73,7 +73,7 @@ def run_conversation(messages):
 
 
 def main():
-    # voice_reader.record_voice()
+    voice_reader.record_voice()
     # Tutaj umieść główną logikę swojego programu
     messages = [
         {"role": "user", "content": "Wyślij wiadomość na slakcu o treści witajcie jestem drugą wiadomością"}]
