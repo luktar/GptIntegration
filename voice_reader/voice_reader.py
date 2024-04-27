@@ -9,6 +9,16 @@ class VoiceReader:
         self.client = OpenAI()
         self.r = sr.Recognizer()
         self.transcriptions = []
+        self.latest_transcrition = ""
+
+    def record_voice(self):
+        with sr.Microphone() as source:
+            print("Calibrating...")
+            self.r.adjust_for_ambient_noise(source, 1)
+            print("Listening...")
+            audio_data = self.r.listen(source)
+            self.callback(self.r, audio_data)
+            return self.latest_transcription
 
     def callback(self, recognizer, audio):
         try:
@@ -23,13 +33,14 @@ class VoiceReader:
                 response_format="text"
             )
             self.transcriptions.append(transcription)
+            self.latest_transcrition = transcription
         except sr.UnknownValueError:
             print("Whisper Recognition could not understand audio")
         except sr.RequestError as e:
             print(
                 "Could not request results from Whisper Recognition service; {0}".format(e))
 
-    def record_voice(self):
+    def record_voice_background(self):
         with sr.Microphone() as source:
             print("Calibrating...")
             self.r.adjust_for_ambient_noise(source, 1)
@@ -39,13 +50,9 @@ class VoiceReader:
         # stop_listening(wait_for_stop=True)
         listen = True
         while listen:
-            if len(self.get_transcriptions()) > 0:
-                print(self.get_transcriptions())
-                if 'stop' in self.get_transcriptions()[-1].lower():
+            if len(self.ranscriptions) > 0:
+                print(self.transcriptions)
+                if 'stop' in self.transcriptions[-1].lower():
                     stop_listening(wait_for_stop=True)
                     listen = False
             sleep(0.1)
-
-    def get_transcriptions(self):
-        # after calling record_voice, use this to get transcriptions
-        return self.transcriptions
