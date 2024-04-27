@@ -2,5 +2,5 @@ class CalendarConnector:
     def __init__(self) -> None:
         pass
 
-    def create_event(self, title, start_date, end_date, message, list_people):
-        pass
+    def add_appointment_to_calendar(self, appointment_title, date):
+        return 'Added appointment to calendar: ' + appointment_title + " for date " + date
