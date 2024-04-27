@@ -3,7 +3,7 @@ import json
 
 @dataclass
 class Config:
-    openai_apikey: str
+    temp: str
 
 
 def load_config(config_file):
