@@ -7,9 +7,12 @@ from voice_reader.voice_reader import VoiceReader
 import config
 from openai import OpenAI
 import json
+from dotenv import load_dotenv
+
+load_dotenv()
 
 gpt_model = "gpt-3.5-turbo-0125"
-client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Example dummy function hard coded to return the same weather
 # In production, this could be your backend API or an external API
@@ -175,6 +178,11 @@ def run_conversation(messages):
 
 
 def main():
+    # Create an instance of the VoiceReader class
+    voice_reader = VoiceReader()
+
+    # Call the read_voice method on the instance
+    voice_reader.record_voice()
     # Tutaj umieść główną logikę swojego programu
     # uncomment test propmpts to check if function calling works
     # messages = [{"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"}]
