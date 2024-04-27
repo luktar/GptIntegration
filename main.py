@@ -18,8 +18,6 @@ email_connector = MailConnector()
 calendar_connector = CalendarConnector()
 voice_reader = VoiceReader()
 
-
-
 gpt_model = "gpt-3.5-turbo-0125"
 client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 

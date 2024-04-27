@@ -1,6 +1,5 @@
 import speech_recognition as sr
 
-
 class VoiceReader:
     def __init__(self) -> None:
         pass
@@ -16,3 +15,4 @@ class VoiceReader:
             # convert speech to text
             text = r.recognize_whisper(audio_data, "small")
             print(text)
+            return text
