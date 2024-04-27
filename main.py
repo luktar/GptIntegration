@@ -80,7 +80,8 @@ def main():
     # messages = [{"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"}]
     messages = [
         # {"role": "user", "content": "Add a new event into the calendar and name it a feedback meeting with Rebeca. Set the date on 24th of July 2024."}]
-        {"role": "user", "content": "Please send email message Hi, when will you start your work today? to the email paweltomkow@gmail.com"}]
+        # {"role": "user", "content": "Please send email message Hi, when will you start your work today? to the email paweltomkow@gmail.com"}]
+        {"role": "user", "content": transcription}]
     # messages = [{"role": "user", "content": "Please add appointment with title Project Onboarding Meeting for a next friday. Today is 22.04.2024"}]
     chat_completion = run_conversation(messages)
     print(chat_completion.choices[0].message.content)

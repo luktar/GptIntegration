@@ -9,7 +9,7 @@ class VoiceReader:
         self.client = OpenAI()
         self.r = sr.Recognizer()
         self.transcriptions = []
-        self.latest_transcrition = ""
+        self.latest_transcription = ""
 
     def record_voice(self):
         with sr.Microphone() as source:
@@ -33,7 +33,7 @@ class VoiceReader:
                 response_format="text"
             )
             self.transcriptions.append(transcription)
-            self.latest_transcrition = transcription
+            self.latest_transcription = transcription
         except sr.UnknownValueError:
             print("Whisper Recognition could not understand audio")
         except sr.RequestError as e:
