@@ -8,11 +8,15 @@ from communi_hub.weather_connector import WeatherConnector
 from voice_generator.voice_generator import VoiceGenerator
 from voice_reader.voice_reader import VoiceReader
 from openai import OpenAI
+from dotenv import load_dotenv
+load_dotenv()
+
 
 slack_connector = SlackConnector()
 weather_connector = WeatherConnector()
 email_connector = MailConnector()
 calendar_connector = CalendarConnector()
+voice_reader = VoiceReader()
 
 gpt_model = "gpt-3.5-turbo-0125"
 client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
@@ -69,6 +73,8 @@ def run_conversation(messages):
 
 
 def main():
+    # Call the read_voice method on the instance
+    voice_reader.record_voice()
     # Tutaj umieść główną logikę swojego programu
     # uncomment test propmpts to check if function calling works
     # messages = [{"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"}]
