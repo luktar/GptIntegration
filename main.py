@@ -74,7 +74,7 @@ def run_conversation(messages):
 
 def main():
     # Call the read_voice method on the instance
-    voice_reader.record_voice()
+    transcription = voice_reader.record_voice()
     # Tutaj umieść główną logikę swojego programu
     # uncomment test propmpts to check if function calling works
     # messages = [{"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"}]
