@@ -28,6 +28,7 @@ available_functions = {
     "read_messages_from_slack": slack_connector.read_messages,
     "send_email": email_connector.send_email,
     "add_appointment_to_calendar": calendar_connector.add_appointment_to_calendar,
+    "delete_appointment_from_calendar": calendar_connector.delete_appointment_from_calendar
 }
 
 
@@ -83,6 +84,12 @@ def main():
         {"role": "user", "content": transcription},
         # {"role": "user", "content": "Please add appointment with title Project Onboarding Meeting for a next friday. Today is 22.04.2024"},
         # {"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"},
+        #{"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a next friday. Today is 27.04.2024"}]
+        #{"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a tomorrow. Today is 27.04.2024"}]
+        #{"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a second Monday on the next month. Today is 27.04.2024"}]
+        #{"role": "user", "content": "Please delete appointment from the calendar from a next friday. Today is 27.04.2024"}]
+        #{"role": "user", "content": "Please delete appointment from the calendar from a tomorrow. Today is 27.04.2024"}]
+        #{"role": "user", "content": "Please delete appointment from the calendar from a second Monday on the next month. Today is 27.04.2024"}]
     ]
     chat_completion = run_conversation(messages)
     print(chat_completion.choices[0].message.content)
