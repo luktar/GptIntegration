@@ -161,3 +161,5 @@ cython_debug/
 
 # Env specific
 launch.json
+
+.DS_Store
