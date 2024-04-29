@@ -30,11 +30,12 @@ available_functions = {
     #"read_messages_from_slack": slack_connector.read_messages,
     #"send_email": email_connector.send_email,
    # "add_appointment_to_calendar": calendar_connector.add_appointment_to_calendar,
-    "add_item_to_shoppinglist": shoppinglist_connector.add_item_to_shoppinglist,
+    "add_items_to_shoppinglist": shoppinglist_connector.add_items_to_shoppinglist,
     "remove_item_from_shoppinglist": shoppinglist_connector.remove_item_from_shoppinglist,
     "mark_as_bought_in_shoppinglist": shoppinglist_connector.mark_as_bought_in_shoppinglist,
     "get_all_items_from_shoppinglist": shoppinglist_connector.get_all_items_from_shoppinglist,
     "get_items_to_buy_from_shoppinglist": shoppinglist_connector.get_items_to_buy_from_shoppinglist,
+    "delete_all_from_shoppinglist": shoppinglist_connector.delete_all_from_shoppinglist,
 }
 
 
