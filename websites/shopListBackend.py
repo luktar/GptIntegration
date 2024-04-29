@@ -10,32 +10,39 @@ class ShoppingListBackend:
         self.websockets = set()
         self.start_server()
 
-    def add(self, item: str):
-        if item not in self.get_all_to_buy():
-            self.items_to_buy.append({'name': item, 'bought': False})
-            return True
-        return False
+    def add(self, items):
+        for item in items:
+            if item not in self.get_all_to_buy():
+                self.items_to_buy.append({'name': item, 'bought': False})
+        return True
 
-    def delete(self, item):
-        for i in range(len(self.items_to_buy)):
-            if self.items_to_buy[i]['name'] == item:
-                del self.items_to_buy[i]
-                return True
-        return False
+    def delete(self, items):
+        for item in items:
+            for i in range(len(self.items_to_buy)):
+                if self.items_to_buy[i]['name'] == item:
+                    del self.items_to_buy[i]
+                    break
+        return True
 
-    def bought(self, item):
-        for i in range(len(self.items_to_buy)):
-            if self.items_to_buy[i]['name'] == item:
-                self.items_to_buy[i]['bought'] = True
-                return True
-        return False
+    def bought(self, items):
+        for item in items:
+            for i in range(len(self.items_to_buy)):
+                if self.items_to_buy[i]['name'] == item:
+                    self.items_to_buy[i]['bought'] = True
+                    break
+        return True
     
-    def unbought(self, item):
-        for i in range(len(self.items_to_buy)):
-            if self.items_to_buy[i]['name'] == item:
-                self.items_to_buy[i]['bought'] = False
-                return True
-        return False
+    def unbought(self, items):
+        for item in items:
+            for i in range(len(self.items_to_buy)):
+                if self.items_to_buy[i]['name'] == item:
+                    self.items_to_buy[i]['bought'] = False
+                    break
+        return True
+    
+    def delete_all(self):
+        self.items_to_buy.clear()
+        return True
 
     # Send to all clients
     async def broadcast(self, message):
@@ -49,24 +56,27 @@ class ShoppingListBackend:
 
                 data = json.loads(message)
                 action = data.get('action', '')
-                item = data.get('item', '')
-                print(action, item)
-                if action == 'add':
-                    result = self.add(item)
-                    await self.send_response(result, "Item already exists")
-                elif action == 'delete':
-                    result = self.delete(item)
-                    await self.send_response(result, "Item not found")
-                elif action == 'bought':
-                    result=self.bought(item)
-                    await self.send_response(result, "Item not found")
-                elif action == 'unbought':
-                    result=self.unbought(item)
-                    await self.send_response(result, "Item not found")
-                elif action == 'get_all_to_buy':
+                items = data.get('items', [])
+                #print(action, items)
+                if action == 'get_all_to_buy':
                     await self.send_all_items_to_buy()
                 elif action == 'get_all_items':
                     await self.send_all_items()
+                elif action == 'add':
+                    result = self.add(items)
+                    await self.send_response(result, "Item already exists")
+                elif action == 'delete':
+                    result = self.delete(items)
+                    await self.send_response(result, "Item not found")
+                elif action == 'bought':
+                    result=self.bought(items)
+                    await self.send_response(result, "Item not found")
+                elif action == 'unbought':
+                    result=self.unbought(items)
+                    await self.send_response(result, "Item not found")
+                elif action == 'delete_all':
+                    result=self.delete_all()
+                    await self.send_response(result, "Items not found")
         finally:
             self.websockets.remove(websocket)
 

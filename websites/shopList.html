@@ -128,9 +128,9 @@
                 checkbox.addEventListener('change', function () {
                     const change = this.checked ? true : false;
                     if (change) {
-                        socket.send(JSON.stringify({ action: 'bought', item: item.name }));
+                        socket.send(JSON.stringify({ action: 'bought', items: [item.name] }));
                     } else {
-                        socket.send(JSON.stringify({ action: 'unbought', item: item.name }));
+                        socket.send(JSON.stringify({ action: 'unbought', items: [item.name] }));
                     }
                 });
 
@@ -145,7 +145,7 @@
 
                 // Add an event listener to the delete button
                 deleteButton.addEventListener('click', function () {
-                    socket.send(JSON.stringify({ action: 'delete', item: item.name }));
+                    socket.send(JSON.stringify({ action: 'delete', items: [item.name] }));
                     listItem.remove(); // Remove the item from the list on the client side
                 });
 
@@ -168,8 +168,10 @@
 
         document.getElementById('addItemBtn').addEventListener('click', function () {
             const newItem = document.getElementById('newItem').value.trim();
+            const itemsArray = newItem.split(',').map(item => item.trim());
+            console.log(itemsArray)
             if (newItem !== '') {
-                socket.send(JSON.stringify({ action: 'add', item: newItem }));
+                socket.send(JSON.stringify({ action: 'add', items: itemsArray }));
                 document.getElementById('newItem').value = '';
             }
         });

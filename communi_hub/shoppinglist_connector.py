@@ -1,4 +1,5 @@
 import json
+from typing import Dict, List
 import websockets
 import asyncio
 
@@ -13,26 +14,36 @@ class ShoppingListConnector:
             response = await websocket.recv()  # Receive the response from the server
             return json.loads(response)
 
-    def add_item_to_shoppinglist(self, item: str):
-        response=asyncio.run(self.send_message({"action": "add", "item": item}))
+    def add_items_to_shoppinglist(self, items: str):
+        items=self.convert_to_list(items)
+        response=asyncio.run(self.send_message({"action": "add", "items": items}))
         if 'message' in response:
             return response['message']
         else:
-            return f"{item} added successfully"
+            return f"Items added successfully"
 
-    def remove_item_from_shoppinglist(self, item: str):
-        response=asyncio.run(self.send_message({"action": "delete", "item": item}))
+    def remove_item_from_shoppinglist(self, items: str):
+        items=self.convert_to_list(items)
+        response=asyncio.run(self.send_message({"action": "delete", "items": items}))
         if 'message' in response:
             return response['message']
         else:
-            return f"{item} removed successfully"
+            return f"Items removed successfully"
 
-    def mark_as_bought_in_shoppinglist(self, item: str):
-        response=asyncio.run(self.send_message({"action": "bought", "item": item}))
+    def mark_as_bought_in_shoppinglist(self, items: str):
+        items=self.convert_to_list(items)
+        response=asyncio.run(self.send_message({"action": "bought", "items": items}))
         if 'message' in response:
             return response['message']
         else:
-            return f"{item} marked as bought"
+            return f"Items marked as bought"
+    
+    def delete_all_from_shoppinglist(self):
+        response=asyncio.run(self.send_message({"action": "delete_all"}))
+        if 'message' in response:
+            return response['message']
+        else:
+            return f"Delete all items successfully"
 
     def get_all_items_from_shoppinglist(self):
         items = asyncio.run(self.send_message({"action": "get_all_items"}))
@@ -61,3 +72,7 @@ class ShoppingListConnector:
             formatted_list.append(f"{item_name} - {bought_status}")
 
         return "Shopping list: " + ", ".join(formatted_list)
+
+    def convert_to_list(self, items):
+        item_names = [item.strip() for item in items.split(",")]
+        return item_names
