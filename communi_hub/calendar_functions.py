@@ -13,9 +13,13 @@ functions = [{
                         "appointment_date": {
                             "type": "string",
                             "description": "The start date for the appointment in YYYY-MM-DD format",
+                        },
+                        "appointment_hour": {
+                            "type": "string",
+                            "description": "The hour of the appointment in 24 hour format (0-23) and 2 digits",
                         }
                     },
-                    "required": ["appointment_title", "appointment_date"],
+                    "required": ["appointment_title", "appointment_date", "appointment_hour"],
                 },
             }
 },
@@ -30,9 +34,13 @@ functions = [{
                         "appointment_date": {
                             "type": "string",
                             "description": "The date of the appointment in YYYY-MM-DD format",
+                        },
+                        "appointment_hour": {
+                            "type": "string",
+                            "description": "The hour of the appointment in 24 hour format (0-23) and 2 digits",
                         }
                     },
-                    "required": ["appointment_date"],
+                    "required": ["appointment_date", "appointment_hour"],
                 },
             }
 }]

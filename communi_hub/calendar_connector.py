@@ -9,6 +9,7 @@ from googleapiclient.errors import HttpError
 import json
 from dotenv import load_dotenv
 from pathlib import Path
+from datetime import datetime, timedelta, timezone
 
 dotenv_path = Path('../.env')
 load_dotenv()
@@ -50,9 +51,15 @@ class CalendarConnector:
         self.service = build("calendar", "v3", credentials=self.creds)
         print("Successfully connected to Google Calendar")
 
-    def add_appointment_to_calendar(self, appointment_title: str, appointment_date: str):
+    def add_appointment_to_calendar(self, appointment_title: str, appointment_date: str, appointment_hour: str):
         if not self.service:
             self.connect_to_api()
+    
+        start_time_appointment = f"{appointment_date}T{appointment_hour}:00:00"
+        start_time = datetime.fromisoformat(start_time_appointment)
+        finish_time = start_time + timedelta(hours=1)
+        finish_time_appointment = finish_time.isoformat()
+        
         try:
             if dt.datetime.strptime(appointment_date, "%Y-%m-%d").date() < dt.datetime.now().date():
                 return "You can only create events for today or future dates"
@@ -61,11 +68,11 @@ class CalendarConnector:
                 "summary": appointment_title,
                 "colorId": 2,
                 "start": {
-                    "dateTime": f"{appointment_date}T08:00:00Z",
+                    "dateTime": f"{start_time_appointment}",
                     "timeZone": "Europe/Warsaw",
                 },
                 "end": {
-                    "dateTime": f"{appointment_date}T10:00:00Z",
+                    "dateTime": f"{finish_time_appointment}",
                     "timeZone": "Europe/Warsaw",
                 }
             }
@@ -76,17 +83,21 @@ class CalendarConnector:
         except HttpError as error:
             return "Error occurred while adding appointment to calendar."
 
-    def delete_appointment_from_calendar(self, appointment_date: str):
+    def delete_appointment_from_calendar(self, appointment_date: str, appointment_hour: str):
         if not self.service:
             self.connect_to_api()
         try:
-            start = f"{appointment_date}T08:00:00Z"
-            end = f"{appointment_date}T10:00:00Z"
-
+            start_time_appointment = f"{appointment_date}T{appointment_hour}:00:00"
+            start_time = datetime.fromisoformat(start_time_appointment)
+            finish_time = start_time + timedelta(hours=1)
+            finish_time_appointment = finish_time.isoformat()
+            start_time_appointment = start_time_appointment + self.create_time_zone()
+            finish_time_appointment = finish_time_appointment + self.create_time_zone()
+            print(start_time_appointment, finish_time_appointment)
             events_result = self.service.events().list(
                 calendarId='primary',
-                timeMax=end,
-                timeMin=start,
+                timeMax=finish_time_appointment,
+                timeMin=start_time_appointment,
             ).execute()
 
             if not events_result.get('items', []):
@@ -98,4 +109,15 @@ class CalendarConnector:
                 return f"Deleted event on {appointment_date}."
 
         except HttpError as error:
-            return "Error occurred while deleting appointment from calendar."
+            return f"Error occurred while deleting appointment from calendar. {error}"
+        
+    def create_time_zone(self):
+        current_timezone_offset = datetime.now(timezone.utc).astimezone().utcoffset()
+
+        hours_offset = current_timezone_offset.total_seconds() // 3600
+        minutes_offset = (current_timezone_offset.total_seconds() % 3600) // 60
+
+        timezone_offset_text = f"{int(hours_offset):+03d}:{int(minutes_offset):02d}"
+
+        return timezone_offset_text
+

@@ -9,10 +9,11 @@ from voice_generator.voice_generator import VoiceGenerator
 from voice_reader.voice_reader import VoiceReader
 from openai import OpenAI
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
-slack_connector = SlackConnector()
+#slack_connector = SlackConnector()
 weather_connector = WeatherConnector()
 email_connector = MailConnector()
 calendar_connector = CalendarConnector()
@@ -24,8 +25,8 @@ client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 
 available_functions = {
     "get_current_weather": weather_connector.get_current_weather,
-    "send_message_on_slack": slack_connector.send_message,
-    "read_messages_from_slack": slack_connector.read_messages,
+    #"send_message_on_slack": slack_connector.send_message,
+    #"read_messages_from_slack": slack_connector.read_messages,
     "send_email": email_connector.send_email,
     "add_appointment_to_calendar": calendar_connector.add_appointment_to_calendar,
     "delete_appointment_from_calendar": calendar_connector.delete_appointment_from_calendar
@@ -73,21 +74,25 @@ def run_conversation(messages):
         )
         return second_response
 
+def get_current_time():
+    return f" Today is {datetime.now().strftime("%Y-%m-%d %A")}."
 
 def main():
     # Call the read_voice method on the instance
-    transcription = voice_reader.record_voice()
+    #transcription = voice_reader.record_voice()
     # Tutaj umieść główną logikę swojego programu
     messages = [
-        {"role": "user", "content": "Przeczytaj dwie ostatnie wiadomości na slacku."},
+        #{"role": "user", "content": "Przeczytaj dwie ostatnie wiadomości na slacku."},
         # # {"role": "user", "content": "Please send email message Hi, when will you start your work today? to the email paweltomkow@gmail.com"},
-        {"role": "user", "content": transcription},
+        #{"role": "user", "content": transcription},
         # {"role": "user", "content": "Please add appointment with title Project Onboarding Meeting for a next friday. Today is 22.04.2024"},
         # {"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"},
         #{"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a next friday. Today is 27.04.2024"}]
-        #{"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a tomorrow. Today is 27.04.2024"}]
+        #{"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a tomorrow at 20:00. Today is 29.04.2024"}
+        #{"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for the day after tomorrow at 05:00."+get_current_time()}
+        #{"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for 3 May at 23."+get_current_time()},
         #{"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a second Monday on the next month. Today is 27.04.2024"}]
-        #{"role": "user", "content": "Please delete appointment from the calendar from a next friday. Today is 27.04.2024"}]
+        #{"role": "user", "content": "Please delete appointment from the calendar from a near Friday at 23."+get_current_time()}
         #{"role": "user", "content": "Please delete appointment from the calendar from a tomorrow. Today is 27.04.2024"}]
         #{"role": "user", "content": "Please delete appointment from the calendar from a second Monday on the next month. Today is 27.04.2024"}]
     ]
