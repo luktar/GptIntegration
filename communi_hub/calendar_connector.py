@@ -101,7 +101,7 @@ class CalendarConnector:
             ).execute()
 
             if not events_result.get('items', []):
-                return f"No events found on {appointment_date}"
+                return f"You can't delete event what not exist in calendar on {appointment_date}"
 
             for event in events_result.get('items', []):
                 event_id = event['id']

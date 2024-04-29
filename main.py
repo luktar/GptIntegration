@@ -79,12 +79,12 @@ def get_current_time():
 
 def main():
     # Call the read_voice method on the instance
-    #transcription = voice_reader.record_voice()
+    transcription = voice_reader.record_voice()
     # Tutaj umieść główną logikę swojego programu
     messages = [
         #{"role": "user", "content": "Przeczytaj dwie ostatnie wiadomości na slacku."},
         # # {"role": "user", "content": "Please send email message Hi, when will you start your work today? to the email paweltomkow@gmail.com"},
-        #{"role": "user", "content": transcription},
+        {"role": "user", "content": transcription+"."+get_current_time()},
         # {"role": "user", "content": "Please add appointment with title Project Onboarding Meeting for a next friday. Today is 22.04.2024"},
         # {"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"},
         #{"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a next friday. Today is 27.04.2024"}]
