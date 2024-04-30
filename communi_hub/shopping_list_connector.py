@@ -14,7 +14,7 @@ class ShoppingListConnector:
             response = await websocket.recv()  # Receive the response from the server
             return json.loads(response)
 
-    def add_items_to_shoppinglist(self, items: str):
+    def add_items_to_shopping_list(self, items: str):
         items=self.convert_to_list(items)
         response=asyncio.run(self.send_message({"action": "add", "items": items}))
         if 'message' in response:
@@ -22,7 +22,7 @@ class ShoppingListConnector:
         else:
             return f"Items added successfully"
 
-    def remove_item_from_shoppinglist(self, items: str):
+    def remove_item_from_shopping_list(self, items: str):
         items=self.convert_to_list(items)
         response=asyncio.run(self.send_message({"action": "delete", "items": items}))
         if 'message' in response:
@@ -30,7 +30,7 @@ class ShoppingListConnector:
         else:
             return f"Items removed successfully"
 
-    def mark_as_bought_in_shoppinglist(self, items: str):
+    def mark_as_bought_in_shopping_list(self, items: str):
         items=self.convert_to_list(items)
         response=asyncio.run(self.send_message({"action": "bought", "items": items}))
         if 'message' in response:
@@ -38,18 +38,18 @@ class ShoppingListConnector:
         else:
             return f"Items marked as bought"
     
-    def delete_all_from_shoppinglist(self):
+    def delete_all_from_shopping_list(self):
         response=asyncio.run(self.send_message({"action": "delete_all"}))
         if 'message' in response:
             return response['message']
         else:
             return f"Delete all items successfully"
 
-    def get_all_items_from_shoppinglist(self):
+    def get_all_items_from_shopping_list(self):
         items = asyncio.run(self.send_message({"action": "get_all_items"}))
         return self.format_shopping_list_all_items(items)
 
-    def get_items_to_buy_from_shoppinglist(self):
+    def get_items_to_buy_from_shopping_list(self):
         items = asyncio.run(self.send_message({"action": "get_all_to_buy"}))
         return self.format_shopping_list(items)
 
