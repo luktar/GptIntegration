@@ -12,6 +12,7 @@ from voice_reader.voice_reader import VoiceReader
 from openai import OpenAI
 from dotenv import load_dotenv
 import langdetect
+from datetime import datetime
 
 load_dotenv()
 
@@ -61,6 +62,28 @@ def function_call(tool_calls):
     )
     return second_response
 
+def run_conversation(messages):
+    response = client.chat.completions.create(
+        model=gpt_model,
+        messages=messages,
+        tools=tools,
+        tool_choice="auto"
+    )
+
+    response_message = response.choices[0].message
+    tool_calls = response_message.tool_calls
+    messages.append(response_message)
+
+    if tool_calls:
+        return function_call(tool_calls)
+    return response_message
+
+def is_polish(text):
+    try:
+        return langdetect.detect(text) == 'pl'
+    except Exception as e:
+        print("Error in language detection:", e)
+        return False
 
 def run_conversation(messages):
     response = client.chat.completions.create(
