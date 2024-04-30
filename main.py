@@ -16,7 +16,7 @@ from datetime import datetime
 
 load_dotenv()
 
-#slack_connector = SlackConnector()
+slack_connector = SlackConnector()
 weather_connector = WeatherConnector()
 email_connector = MailConnector()
 calendar_connector = CalendarConnector()
@@ -30,8 +30,8 @@ messages = []
 
 available_functions = {
     "get_current_weather": weather_connector.get_current_weather,
-    #"send_message_on_slack": slack_connector.send_message,
-    #"read_messages_from_slack": slack_connector.read_messages,
+    "send_message_on_slack": slack_connector.send_message,
+    "read_messages_from_slack": slack_connector.read_messages,
     "send_email": email_connector.send_email,
     "add_appointment_to_calendar": calendar_connector.add_appointment_to_calendar,
     "delete_appointment_from_calendar": calendar_connector.delete_appointment_from_calendar
@@ -61,9 +61,6 @@ def function_call(tool_calls):
         messages=messages,
     )
     return second_response
-
-def get_current_time():
-    return f" Today is {datetime.now().strftime("%Y-%m-%d %A")}."
 
 def run_conversation(messages):
     response = client.chat.completions.create(
