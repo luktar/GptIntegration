@@ -161,5 +161,8 @@ cython_debug/
 
 # Env specific
 launch.json
+calendar_token.json
+
+output.mp3
 
 .DS_Store

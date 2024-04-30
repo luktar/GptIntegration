@@ -2,7 +2,10 @@
   "cSpell.words": [
     "communi",
     "dotenv",
-    "OPENAI"
+    "langdetect",
+    "OPENAI",
+    "playsound",
+    "pyttsx"
   ],
   "[python]": {
     "editor.tabSize": 4,
