@@ -6,7 +6,7 @@ functions = [{
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "message": {
+                        "text_message": {
                             "type": "string",
                             "description": "Message typed to send",
                         },
@@ -15,7 +15,7 @@ functions = [{
                             "description": "Message receiver email address",
                         }
                     },
-                    "required": ["message", "email"],
+                    "required": ["text_message", "email"],
                 },
             },
 }]

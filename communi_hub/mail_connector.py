@@ -43,18 +43,18 @@ class MailConnector:
 
     def send_email(self, text_message, email):
         try:
-            message = EmailMessage()
+            text_message = EmailMessage()
 
-            message.set_content(text_message)
+            text_message.set_content(text_message)
             time_utc = datetime.now(pytz.UTC).strftime("%d-%m-%Y %H:%M")
 
             
-            message["To"] = email
-            message["From"] = "gptintegration01@gmail.com"
-            message["Subject"] = f"Mail {time_utc}"
+            text_message["To"] = email
+            text_message["From"] = "gptintegration01@gmail.com"
+            text_message["Subject"] = f"Mail {time_utc}"
 
             # encoded message
-            encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+            encoded_message = base64.urlsafe_b64encode(text_message.as_bytes()).decode()
 
             create_message = {"raw": encoded_message}
             # pylint: disable=E1101
