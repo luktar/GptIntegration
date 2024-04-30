@@ -5,7 +5,8 @@
     "langdetect",
     "OPENAI",
     "playsound",
-    "pyttsx"
+    "pyttsx",
+    "websockets"
   ],
   "[python]": {
     "editor.tabSize": 4,

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: black;
+        }
+
+        h1 {
+            color: whitesmoke;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #shoppingList {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .bought {
+            text-decoration: line-through;
+        }
+
+        .list-group-item {
+            background-color: rgb(106, 105, 105);
+            color: whitesmoke;
+            border-radius: 5px;
+            margin: 5px 0;
+            box-shadow: 1px 1px 5px 0 rgb(163, 162, 162)
+        }
+
+        .container {
+            margin-top: 10vh;
+        }
+
+        #newItem {
+            background-color: rgb(179, 179, 179);
+            color: black;
+            border-radius: 5px;
+            box-shadow: 1px 1px 5px 0 rgb(124, 124, 124)
+        }
+
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #checked_item{
+            background-color: rgb(54, 54, 54);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center">Shopping List</h1>
+                <ul id="shoppingList" class="list-group"></ul>
+                <div class="input-group mt-3">
+                    <input type="text" id="newItem" class="form-control" placeholder="Enter new item...">
+                    <div class="input-group-append">
+                        <button class="btn btn-dark" type="button" id="addItemBtn">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:8765');
+
+        socket.addEventListener('open', function (event) {
+            console.log('Connected to WebSocket server');
+            socket.send(JSON.stringify({ action: 'get_all_items' }));
+        });
+        socket.addEventListener('message', function (event) {
+            const data = JSON.parse(event.data);
+            if (data.items_to_buy != null) {
+                console.log(data.items_to_buy)
+                updateShoppingList(data.items_to_buy);
+            }
+        });
+        function updateShoppingList(items) {
+            const shoppingList = document.getElementById('shoppingList');
+            shoppingList.innerHTML = '';
+
+            const sortedItems = items.sort((a, b) => {
+                if (a.bought === b.bought) {
+                    return 0;
+                } else if (a.bought) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
+
+            items.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item');
+
+                const itemName = document.createElement('span');
+                itemName.textContent = item.name;
+
+
+                const checkboxDiv = document.createElement('div');
+                checkboxDiv.classList.add('btn-group-toggle');
+                checkboxDiv.setAttribute('data-toggle', 'buttons');
+
+                const label = document.createElement('label');
+                label.classList.add('btn', 'btn-secondary', 'active');
+
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = item.bought;
+                if (item.bought) {
+                    listItem.id = 'checked_item';
+                }
+                checkbox.autocomplete = 'off';
+
+                // Add an event listener to the checkbox
+                checkbox.addEventListener('change', function () {
+                    const change = this.checked ? true : false;
+                    if (change) {
+                        socket.send(JSON.stringify({ action: 'bought', items: [item.name] }));
+                    } else {
+                        socket.send(JSON.stringify({ action: 'unbought', items: [item.name] }));
+                    }
+                });
+
+                const labelText = document.createTextNode('Checked');
+                label.appendChild(checkbox);
+                label.appendChild(labelText);
+                checkboxDiv.appendChild(label);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('btn', 'btn-danger');
+                deleteButton.textContent = 'Delete';
+
+                // Add an event listener to the delete button
+                deleteButton.addEventListener('click', function () {
+                    socket.send(JSON.stringify({ action: 'delete', items: [item.name] }));
+                    listItem.remove(); // Remove the item from the list on the client side
+                });
+
+                const controlsDiv = document.createElement('div');
+                controlsDiv.classList.add('btn-group', 'btn-group-toggle');
+                controlsDiv.appendChild(checkboxDiv);
+                controlsDiv.appendChild(deleteButton);
+
+                listItem.appendChild(itemName);
+                listItem.appendChild(controlsDiv);
+
+                if (item.bought) {
+                    listItem.classList.add('bought');
+                }
+
+                shoppingList.appendChild(listItem);
+            });
+
+        }
+
+        document.getElementById('addItemBtn').addEventListener('click', function () {
+            const newItem = document.getElementById('newItem').value.trim();
+            const itemsArray = newItem.split(',').map(item => item.trim());
+            console.log(itemsArray)
+            if (newItem !== '') {
+                socket.send(JSON.stringify({ action: 'add', items: itemsArray }));
+                document.getElementById('newItem').value = '';
+            }
+        });
+    </script>
+</body>
+
+</html>

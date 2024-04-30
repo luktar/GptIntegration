@@ -2,11 +2,12 @@ from datetime import datetime
 import os
 import json
 import sys
-from communi_hub import calendar_functions, mail_functions, slack_functions, weather_functions
+from communi_hub import calendar_functions, mail_functions, shopping_list_functions, slack_functions, weather_functions
 from communi_hub.slack_connector import SlackConnector
 from communi_hub.calendar_connector import CalendarConnector
 from communi_hub.mail_connector import MailConnector
 from communi_hub.weather_connector import WeatherConnector
+from communi_hub.shopping_list_connector import ShoppingListConnector
 from voice_generator.voice_generator import VoiceGenerator
 from voice_reader.voice_reader import VoiceReader
 from openai import OpenAI
@@ -22,6 +23,7 @@ email_connector = MailConnector()
 calendar_connector = CalendarConnector()
 voice_reader = VoiceReader()
 voice_generator = VoiceGenerator()
+shopping_list_connector = ShoppingListConnector()
 
 gpt_model = "gpt-3.5-turbo-0125"
 client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
@@ -34,11 +36,19 @@ available_functions = {
     "read_messages_from_slack": slack_connector.read_messages,
     "send_email": email_connector.send_email,
     "add_appointment_to_calendar": calendar_connector.add_appointment_to_calendar,
-    "delete_appointment_from_calendar": calendar_connector.delete_appointment_from_calendar
+    "delete_appointment_from_calendar": calendar_connector.delete_appointment_from_calendar,
+    "add_items_to_shopping_list": shopping_list_connector.add_items_to_shopping_list,
+    "remove_item_from_shopping_list": shopping_list_connector.remove_item_from_shopping_list,
+    "mark_as_bought_in_shopping_list": shopping_list_connector.mark_as_bought_in_shopping_list,
+    "get_all_items_from_shopping_list": shopping_list_connector.get_all_items_from_shopping_list,
+    "get_items_to_buy_from_shopping_list": shopping_list_connector.get_items_to_buy_from_shopping_list,
+    "delete_all_from_shopping_list": shopping_list_connector.delete_all_from_shopping_list,
 }
 
+
 tools = calendar_functions.functions + slack_functions.functions + \
-    mail_functions.functions + weather_functions.functions
+    mail_functions.functions + weather_functions.functions + \
+    shopping_list_functions.functions
 
 
 def function_call(tool_calls):
@@ -62,6 +72,15 @@ def function_call(tool_calls):
     )
     return second_response
 
+
+def is_polish(text):
+    try:
+        return langdetect.detect(text) == 'pl'
+    except Exception as e:
+        print("Error in language detection:", e)
+        return False
+
+
 def run_conversation(messages):
     response = client.chat.completions.create(
         model=gpt_model,
@@ -78,28 +97,6 @@ def run_conversation(messages):
         return function_call(tool_calls)
     return response_message
 
-def is_polish(text):
-    try:
-        return langdetect.detect(text) == 'pl'
-    except Exception as e:
-        print("Error in language detection:", e)
-        return False
-
-def run_conversation(messages):
-    response = client.chat.completions.create(
-        model=gpt_model,
-        messages=messages,
-        tools=tools,
-        tool_choice="auto"
-    )
-
-    response_message = response.choices[0].message
-    tool_calls = response_message.tool_calls
-    messages.append(response_message)
-
-    if tool_calls:
-        return function_call(tool_calls)
-    return response_message
 
 def is_polish(text):
     try:
@@ -107,6 +104,7 @@ def is_polish(text):
     except Exception as e:
         print("Error in language detection:", e)
         return False
+
 
 def main():
     current_date = datetime.now().strftime('%m-%d-%Y')
@@ -121,7 +119,7 @@ def main():
             user_input = voice_reader.record_voice()
             print(user_input)
 
-        if(not is_polish(user_input)):
+        if (not is_polish(user_input)):
             print("Nie udało się wysłać wiadomości. Spróbuj ponownie...")
             continue
 
@@ -129,7 +127,7 @@ def main():
             {"role": "user", "content": user_input})
         # {"role": "user", "content": "Przeczytaj dwie ostatnie wiadomości na slacku."}]
         # # {"role": "user", "content": "Please send email message Hi, when will you start your work today? to the email paweltomkow@gmail.com"},
-        # {"role": "user", "content": transcription}]
+
         # {"role": "user", "content": "Please add appointment with title Project Onboarding Meeting for a next friday. Today is 22.04.2024"},
         # {"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"},
         # {"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a next friday. Today is 27.04.2024"}]
@@ -146,7 +144,7 @@ def main():
             result = chat_completion.content
         elif (hasattr(chat_completion.choices[0].message, 'content')):
             result = chat_completion.choices[0].message.content
-    
+
         print(result)
         if not '-t' in sys.argv:
             voice_generator.generate_voice(result)
