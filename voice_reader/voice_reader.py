@@ -13,9 +13,9 @@ class VoiceReader:
 
     def record_voice(self):
         with sr.Microphone() as source:
-            print("Calibrating...")
+            print("Kalibrowanie mikrofonu...")
             self.r.adjust_for_ambient_noise(source, 1)
-            print("Listening...")
+            print("Nasłuchiwanie...")
             audio_data = self.r.listen(source)
             self.callback(self.r, audio_data)
             return self.latest_transcription
@@ -26,7 +26,7 @@ class VoiceReader:
             wav_data = audio.get_wav_data()
             buffer = io.BytesIO(wav_data)
             buffer.name = "recording.wav"
-            print("Recognizing...")
+            print("Analizowanie...")
             transcription = self.client.audio.transcriptions.create(
                 model="whisper-1",
                 file=buffer,
@@ -50,7 +50,7 @@ class VoiceReader:
         # stop_listening(wait_for_stop=True)
         listen = True
         while listen:
-            if len(self.ranscriptions) > 0:
+            if len(self.transcriptions) > 0:
                 print(self.transcriptions)
                 if 'stop' in self.transcriptions[-1].lower():
                     stop_listening(wait_for_stop=True)
