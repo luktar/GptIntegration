@@ -15,8 +15,16 @@ class VoiceReader:
         with sr.Microphone() as source:
             print("Kalibrowanie mikrofonu...")
             self.r.adjust_for_ambient_noise(source, 1)
+            first_threshold = self.r.energy_threshold
+            self.r.adjust_for_ambient_noise(source, 1)
+            second_threshold = self.r.energy_threshold
+            # selects the higher of two thresholds, if necessary we can multiply it to achieve less noise pickup
+            final_threshold = first_threshold if first_threshold > second_threshold else second_threshold
+            final_threshold *= 1.1
+            self.r.energy_threshold = final_threshold
+            
             print("Nasłuchiwanie...")
-            audio_data = self.r.listen(source)
+            audio_data = self.r.listen(source, timeout=20, phrase_time_limit=8)
             self.callback(self.r, audio_data)
             return self.latest_transcription
 
