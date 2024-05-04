@@ -54,7 +54,7 @@ class CalendarConnector:
     def add_appointment_to_calendar(self, appointment_title: str, appointment_date: str, appointment_hour: str):
         if not self.service:
             self.connect_to_api()
-    
+        print(appointment_date)
         start_time_appointment = f"{appointment_date}T{appointment_hour}:00:00"
         start_time = datetime.fromisoformat(start_time_appointment)
         finish_time = start_time + timedelta(hours=1)
@@ -78,7 +78,7 @@ class CalendarConnector:
             }
 
             event = self.service.events().insert(calendarId="primary", body=event).execute()
-            return f"Event created successfully {event.get('htmlLink')}"
+            return f"Event created successfully on {appointment_date} {appointment_hour}"
 
         except HttpError as error:
             return "Error occurred while adding appointment to calendar."
