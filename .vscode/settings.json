@@ -1,11 +1,14 @@
 {
   "cSpell.words": [
     "communi",
+    "creds",
     "dotenv",
+    "googleapiclient",
     "langdetect",
     "OPENAI",
     "playsound",
     "pyttsx",
+    "pytz",
     "websockets"
   ],
   "[python]": {

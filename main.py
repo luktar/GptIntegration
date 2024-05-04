@@ -44,6 +44,7 @@ available_functions = {
     "get_all_items_from_shopping_list": shopping_list_connector.get_all_items_from_shopping_list,
     "get_items_to_buy_from_shopping_list": shopping_list_connector.get_items_to_buy_from_shopping_list,
     "delete_all_from_shopping_list": shopping_list_connector.delete_all_from_shopping_list,
+    "get_contacts": email_connector.get_contacts
 }
 
 
@@ -99,14 +100,6 @@ def run_conversation(messages):
     return response_message
 
 
-def is_polish(text):
-    try:
-        return langdetect.detect(text) == 'pl'
-    except Exception as e:
-        print("Error in language detection:", e)
-        return False
-
-
 def main():
     locale.setlocale(locale.LC_TIME, 'pl_PL')
     current_date = datetime.now().strftime('%Y-%m-%d %A')
@@ -127,17 +120,6 @@ def main():
 
         messages.append(
             {"role": "user", "content": user_input})
-        # {"role": "user", "content": "Przeczytaj dwie ostatnie wiadomości na slacku."}]
-        # # {"role": "user", "content": "Please send email message Hi, when will you start your work today? to the email paweltomkow@gmail.com"},
-
-        # {"role": "user", "content": "Please add appointment with title Project Onboarding Meeting for a next friday. Today is 22.04.2024"},
-        # {"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"},
-        # {"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a next friday. Today is 27.04.2024"}]
-        # {"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a tomorrow. Today is 27.04.2024"}]
-        # {"role": "user", "content": "Please add appointment to the calendar with title Project Onboarding Meeting for a second Monday on the next month. Today is 27.04.2024"}]
-        # {"role": "user", "content": "Please delete appointment from the calendar from a next friday. Today is 27.04.2024"}]
-        # {"role": "user", "content": "Please delete appointment from the calendar from a tomorrow. Today is 27.04.2024"}]
-        # {"role": "user", "content": "Please delete appointment from the calendar from a second Monday on the next month. Today is 27.04.2024"}]
 
         chat_completion = run_conversation(messages)
 
