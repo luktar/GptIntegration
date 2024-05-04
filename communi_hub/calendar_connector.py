@@ -15,7 +15,7 @@ dotenv_path = Path('../.env')
 load_dotenv()
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
-CRED = json.loads(os.environ['CALENDAR_CRED'])
+CRED = json.loads(os.environ['GOOGLE_CRED'])
 
 
 class CalendarConnector:

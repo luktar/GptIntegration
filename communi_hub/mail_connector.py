@@ -13,8 +13,9 @@ import pytz
 
 import json
 
-SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
-CRED = json.loads(os.environ['CALENDAR_CRED'])
+SCOPES = ["https://mail.google.com/"]
+CRED = json.loads(os.environ['GOOGLE_CRED'])
+gmail_token_file_name = "gmail_token.json"
 
 class MailConnector:
     def __init__(self) -> None:
@@ -24,9 +25,9 @@ class MailConnector:
 
     
     def connect_to_api(self):
-        if os.path.exists("calendar_token.json"):
+        if os.path.exists(gmail_token_file_name):
             self.creds = Credentials.from_authorized_user_file(
-                "calendar_token.json")
+                gmail_token_file_name)
 
         if not self.creds or not self.creds.valid:
             if self.creds and self.creds.expired and self.creds.refresh_token:
@@ -35,7 +36,7 @@ class MailConnector:
                 flow = InstalledAppFlow.from_client_config(CRED, SCOPES)
                 self.creds = flow.run_local_server(port=0)
 
-        with open("calendar_token.json", "w") as token:
+        with open(gmail_token_file_name, "w") as token:
             token.write(self.creds.to_json())
 
         self.service = build("gmail", "v1", credentials=self.creds)
