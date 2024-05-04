@@ -24,7 +24,7 @@ class VoiceReader:
             self.recognizer.energy_threshold = final_threshold
             
             print("Nasłuchiwanie...")
-            audio_data = self.recognizer.listen(source, timeout=20, phrase_time_limit=8)
+            audio_data = self.recognizer.listen(source, timeout=8, phrase_time_limit=20)
             self.callback(audio_data)
             return self.latest_transcription
 
@@ -47,20 +47,3 @@ class VoiceReader:
         except sr.RequestError as e:
             print(
                 "Could not request results from Whisper Recognition service; {0}".format(e))
-
-    # def record_voice_background(self):
-    #     with sr.Microphone() as source:
-    #         print("Calibrating...")
-    #         self.recognizer.adjust_for_ambient_noise(source, 1)
-    #     print("Listening...")
-    #     stop_listening = self.recognizer.listen_in_background(source, self.callback)
-
-    #     # stop_listening(wait_for_stop=True)
-    #     listen = True
-    #     while listen:
-    #         if len(self.transcriptions) > 0:
-    #             print(self.transcriptions)
-    #             if 'stop' in self.transcriptions[-1].lower():
-    #                 stop_listening(wait_for_stop=True)
-    #                 listen = False
-    #         sleep(0.1)

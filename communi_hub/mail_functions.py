@@ -18,4 +18,15 @@ functions = [{
                     "required": ["text_message", "email"],
                 },
             },
+}, {
+    "type": "function",
+            "function": {
+                "name": "get_contacts",
+                "description": "Get all contacts including user name and email",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                },
+            },
 }]
