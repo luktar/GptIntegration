@@ -29,7 +29,7 @@ class CalendarConnector:
         print("Successfully connected to Google Calendar")
 
     def add_appointment_to_calendar(self, appointment_title: str, appointment_date: str, appointment_hour: str):
-
+        print(appointment_date)
         start_time_appointment = f"{appointment_date}T{appointment_hour}:00:00"
         start_time = datetime.fromisoformat(start_time_appointment)
         finish_time = start_time + timedelta(hours=1)
@@ -52,9 +52,8 @@ class CalendarConnector:
                 }
             }
 
-            event = self.calendar_service.events().insert(
-                calendarId="primary", body=event).execute()
-            return f"Wydarzenie zostało utworzone."
+            event = self.calendar_service.events().insert(calendarId="primary", body=event).execute()
+            return f"Wydarzenie zostało utworzone. Data: {appointment_date} {appointment_hour}"
 
         except HttpError as error:
             return "Error occurred while adding appointment to calendar."

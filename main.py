@@ -14,6 +14,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import langdetect
 from datetime import datetime
+import locale
 
 load_dotenv()
 
@@ -100,10 +101,10 @@ def run_conversation(messages):
 
 
 def main():
-    current_date = datetime.now().strftime('%Y-%m-%d')
-
+    locale.setlocale(locale.LC_TIME, 'pl_PL')
+    current_date = datetime.now().strftime('%Y-%m-%d %A')
     messages.append({"role": "system", "content": "Nazywam się Kazimierz Kowalski. Dzisiejsza data to: " +
-                    current_date + " Data jest w formacie YYYY-MM-DD. Posługuj się wyłącznie językiem polskim."})
+                    current_date + ". Format daty to: YYYY-MM-DD. Posługuj się wyłącznie językiem polskim."})
 
     while True:
         user_input = ''
