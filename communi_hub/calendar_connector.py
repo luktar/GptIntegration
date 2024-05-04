@@ -52,7 +52,7 @@ class CalendarConnector:
                 }
             }
 
-            event = self.service.events().insert(calendarId="primary", body=event).execute()
+            event = self.calendar_service.events().insert(calendarId="primary", body=event).execute()
             return f"Wydarzenie zostało utworzone. Data: {appointment_date} {appointment_hour}"
 
         except HttpError as error:
