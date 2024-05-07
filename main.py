@@ -35,7 +35,6 @@ available_functions = {
     "get_current_weather": weather_connector.get_current_weather,
     "send_message_on_slack": slack_connector.send_message,
     "read_messages_from_slack": slack_connector.read_messages,
-    "send_email": email_connector.send_email,
     "add_appointment_to_calendar": calendar_connector.add_appointment_to_calendar,
     "delete_appointment_from_calendar": calendar_connector.delete_appointment_from_calendar,
     "add_items_to_shopping_list": shopping_list_connector.add_items_to_shopping_list,
@@ -44,7 +43,10 @@ available_functions = {
     "get_all_items_from_shopping_list": shopping_list_connector.get_all_items_from_shopping_list,
     "get_items_to_buy_from_shopping_list": shopping_list_connector.get_items_to_buy_from_shopping_list,
     "delete_all_from_shopping_list": shopping_list_connector.delete_all_from_shopping_list,
-    "get_contacts": email_connector.get_contacts
+    "get_contacts": email_connector.get_contacts,
+    "check_unread_messages": email_connector.check_unread_messages,
+    "list_unread_messages": email_connector.list_unread_messages,
+    "send_email": email_connector.send_email,
 }
 
 
@@ -86,6 +88,7 @@ def is_polish(text):
 def run_conversation(messages):
     response = client.chat.completions.create(
         model=gpt_model,
+        temperature=0.2,
         messages=messages,
         tools=tools,
         tool_choice="auto"
