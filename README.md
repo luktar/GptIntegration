@@ -24,10 +24,13 @@ Before you start you need to generate:
 
 Put tokens into `.env` file.
 
-```OPENAI_API_KEY='<open_api_token>'
+```
+OPENAI_API_KEY='<open_api_token>'
 SLACK_API_KEY='<slack_api_token>'
 GOOGLE_CRED='<google_json_credentials>'
-SLACK_CHANNEL_ID='<slack_channel_id>'```
+SLACK_CHANNEL_ID='<slack_channel_id>'
+```
+
 
 1. Run: `python websites/shoppingListBackend.py`
 2. Open `websites/shoppingList.html` in the web browser
