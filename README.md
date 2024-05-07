@@ -1,6 +1,7 @@
-# What can I do with this program?
+# How does it work?
 
-You can talk with your voice or texting and manage google calendar, gmail, Slack and shopping list.
+This program uses OpenAI api for communication (ChatGPT), speech recognition and voice generation. You can control google calendar, gmail, Slack and shopping list with your voice or by sending text messages in the command line.
+
 Example commands:
 1. Do I have any unread email messages?
 2. Get and read all unread email messages
@@ -9,7 +10,7 @@ Example commands:
 5. Get 3 last messages from slack
 6. Send 'xxxx' on slack
 7. Add milk and butter to the shopping list
-8. I've bouth milk (it will be market as bouth)
+8. I've bought milk (it will be market as bought)
 9. Is there anything to buy on a shopping list?
 10. Set up meeting tomorrow at 8:00
 11. Remove meeting from tomorrow at 8:00

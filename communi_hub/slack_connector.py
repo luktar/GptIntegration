@@ -9,7 +9,7 @@ class SlackConnector:
     def __init__(self) -> None:
         # logging.basicConfig(level=logging.DEBUG)
         self.client = WebClient(token=os.environ['SLACK_API_KEY'])
-        self.channel = 'C071VBV0X96'
+        self.channel = os.environ['SLACK_CHANNEL_ID']
 
     def send_message(self, message) -> bool:
         try:
