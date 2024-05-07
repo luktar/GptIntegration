@@ -24,7 +24,7 @@ class VoiceReader:
             self.recognizer.energy_threshold = final_threshold
             
             print("Nasłuchiwanie...")
-            audio_data = self.recognizer.listen(source, timeout=8, phrase_time_limit=20)
+            audio_data = self.recognizer.listen(source)#, timeout=8, phrase_time_limit=20)
             self.callback(audio_data)
             return self.latest_transcription
 

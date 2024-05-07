@@ -21,6 +21,28 @@ functions = [{
 }, {
     "type": "function",
             "function": {
+                "name": "check_unread_messages",
+                "description": "Check if there are any unread messages on the mailbox.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                },
+            },
+}, {
+    "type": "function",
+            "function": {
+                "name": "list_unread_messages",
+                "description": "Get all unread email messages with title, date, content and thread id.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                },
+            },
+}, {
+    "type": "function",
+            "function": {
                 "name": "get_contacts",
                 "description": "Get all contacts including user name and email",
                 "parameters": {
