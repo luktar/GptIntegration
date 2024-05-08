@@ -22,9 +22,10 @@ class VoiceReader:
             final_threshold = first_threshold if first_threshold > second_threshold else second_threshold
             final_threshold *= 1.1
             self.recognizer.energy_threshold = final_threshold
-            
+
             print("Nasłuchiwanie...")
-            audio_data = self.recognizer.listen(source)#, timeout=8, phrase_time_limit=20)
+            # , timeout=8, phrase_time_limit=20)
+            audio_data = self.recognizer.listen(source)
             self.callback(audio_data)
             return self.latest_transcription
 
@@ -38,7 +39,8 @@ class VoiceReader:
             transcription = self.client.audio.transcriptions.create(
                 model="whisper-1",
                 file=buffer,
-                response_format="text"
+                response_format="text",
+                language="pl"
             )
             self.transcriptions.append(transcription)
             self.latest_transcription = transcription
